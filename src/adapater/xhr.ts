@@ -13,14 +13,15 @@ export default class XMLAdapter<Q = unknown> extends XMLHttpRequest implements P
     // 配置超时
     this.timeout = this.config.timeout;
 
-    // 处理
-    this.addEventListener("abort", () => {});
-    this.addEventListener("error", () => {});
-    this.addEventListener("process", () => {});
-    this.addEventListener("timeout", () => {});
+    return new Promise<Prier.ResponseConfig<S>>((resolve, reject) => {
+      // 处理
+      this.addEventListener("loadend", (ev) => {
+        const rspHeaders = this.getAllResponseHeaders();
+      });
+      this.addEventListener("timeout", (ev) => {});
 
-    this.send(null);
-    return new Promise<Prier.ResponseConfig<S>>(() => {});
+      this.send(null);
+    });
   }
   abort() {
     super.abort();

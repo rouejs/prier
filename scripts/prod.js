@@ -1,5 +1,5 @@
-import { build } from "esbuild";
-build({
+import * as esbuild from "esbuild";
+esbuild.build({
   entryPoints: ["./src/prier.ts"],
   sourcemap: true,
   bundle: true,
@@ -7,4 +7,4 @@ build({
   splitting: true,
   minify: true,
   outdir: "./dist",
-}).catch(() => process.exit(1));
+});

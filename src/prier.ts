@@ -1,11 +1,44 @@
 import { initConfig } from "./helper/defaults";
 export class Prier {
-  globalConfigs: Prier.RequestConfig;
+  defaults: Prier.RequestConfig;
+  interceptors = {
+    request: "",
+    response: "",
+  };
   constructor(configs: Partial<Prier.RequestConfig>) {
-    this.globalConfigs = initConfig(configs);
+    this.defaults = initConfig(configs);
   }
+  /**
+   *
+   *
+   * @template R
+   * @template S
+   * @param {Partial<Prier.RequestConfig<R>>} config
+   * @return {*}  {Promise<S>}
+   * @memberof Prier
+   */
   request<R = unknown, S = unknown>(config: Partial<Prier.RequestConfig<R>>): Promise<S>;
+  /**
+   *
+   *
+   * @template R
+   * @template S
+   * @param {string} url
+   * @param {Partial<Prier.RequestConfig<R>>} [config]
+   * @return {*}  {Promise<S>}
+   * @memberof Prier
+   */
   request<R = unknown, S = unknown>(url: string, config?: Partial<Prier.RequestConfig<R>>): Promise<S>;
+  /**
+   *
+   *
+   * @template R
+   * @template S
+   * @param {(Partial<Prier.RequestConfig<R>> | string)} urlOrConfig
+   * @param {Partial<Prier.RequestConfig<R>>} [config={}]
+   * @return {*}  {Promise<S>}
+   * @memberof Prier
+   */
   request<R = unknown, S = unknown>(
     urlOrConfig: Partial<Prier.RequestConfig<R>> | string,
     config: Partial<Prier.RequestConfig<R>> = {}
@@ -16,7 +49,7 @@ export class Prier {
       config = urlOrConfig;
     }
 
-    const finalConfig = initConfig(config, this.globalConfigs);
+    const finalConfig = initConfig(config, this.defaults);
 
     if (!config.adapter) {
       throw new Error("adapter can not be undefined");
@@ -28,4 +61,6 @@ export class Prier {
 
     return new Promise<S>((resolve, reject) => {});
   }
+
+  abort() {}
 }

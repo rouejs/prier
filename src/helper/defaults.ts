@@ -35,6 +35,7 @@ const defaults: Prier.DefaultConfig = {
   timeout: 0,
   debounce: 0,
   cache: false,
+  retry: 0,
   validate: (response) => {
     return response.status >= 200 && response.status < 300;
   },
@@ -45,23 +46,19 @@ export const initConfig = <Q = unknown>(
   config: Partial<Prier.RequestConfig<Q>>,
   baseConfig = defaults
 ): Prier.RequestConfig<Q> => {
-  const requestConfig: Prier.RequestConfig<Q> = Object.assign(
-    {
-      adapter: getDefaultAdapter<Q>(config.adapter),
-      data: null,
-    },
-    baseConfig,
-    config
-  );
+  const requestConfig: Prier.RequestConfig<Q> = {
+    adapter: getDefaultAdapter<Q>(config.adapter),
+    data: null,
+    ...baseConfig,
+    ...config,
+  };
 
   // headers处理
-  requestConfig.headers = Object.assign(
-    {
-      Accept: "application/json, text/plain, */*",
-    },
-    headerMaps[requestConfig.method],
-    requestConfig.headers
-  );
+  requestConfig.headers = {
+    Accept: "application/json, text/plain, */*",
+    ...headerMaps[requestConfig.method],
+    ...requestConfig.headers,
+  };
 
   return requestConfig;
 };

@@ -1,19 +1,17 @@
-import { build } from "esbuild";
-build({
+import * as esbuild from "esbuild";
+let ctx = await esbuild.context({
   entryPoints: ["./src/prier.ts"],
   sourcemap: true,
   bundle: true,
   format: "esm",
   splitting: true,
-  watch: {
-    onRebuild(error, result) {
-      if (error) console.error("watch build failed:", error);
-      else console.log("watch build succeeded:", result);
-    },
-  },
+  // watch: {
+  //   onRebuild(error, result) {
+  //     if (error) console.error("watch build failed:", error);
+  //     else console.log("watch build succeeded:", result);
+  //   },
+  // },
   outdir: "./dist",
-})
-  .then(() => {
-    console.log("[watch] build finished, watching for changes...");
-  })
-  .catch(() => process.exit(1));
+});
+await ctx.watch();
+console.log("watching...");

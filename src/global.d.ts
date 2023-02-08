@@ -4,7 +4,10 @@ declare namespace Prier {
   export type Headers = Record<string, string | number | boolean>;
 
   export interface DefaultConfig
-    extends Pick<RequestConfig, "method" | "headers" | "timeout" | "url" | "debounce" | "cache" | "validate"> {}
+    extends Pick<
+      RequestConfig,
+      "method" | "headers" | "timeout" | "url" | "debounce" | "cache" | "validate" | "retry"
+    > {}
 
   // 请求参数
   export interface RequestConfig<Q = unknown> {
@@ -17,6 +20,7 @@ declare namespace Prier {
     timeout: number;
     debounce: number;
     cache: boolean;
+    retry: number;
     validate: <S = unknown>(response: ResponseConfig<S>) => boolean;
   }
 
