@@ -1,41 +1,32 @@
+Headers;
 declare namespace Prier {
-  // 请求方式
-  export type Method = "GET" | "POST" | "DELETE" | "PUT" | "PATCH" | "HEAD" | "OPTIONS" | "PURGE" | "LINK" | "UNLINK";
-  export type Headers = Record<string, string | number | boolean>;
-
-  export interface DefaultConfig
-    extends Pick<
-      RequestConfig,
-      "method" | "headers" | "timeout" | "url" | "debounce" | "cache" | "validate" | "retry"
-    > {}
-
-  // 请求参数
-  export interface RequestConfig<Q = unknown> {
-    url: string;
+  type TMethod = "GET" | "DELETE" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "PATCH" | "PURGE" | "LINK" | "UNLINK";
+  interface IConfig<T = unknown> {
     baseURL?: string;
-    method: Method;
-    headers: Headers;
-    data: Q;
-    adapter: AdapterConstruct<Q>;
-    timeout: number;
-    debounce: number;
-    cache: boolean;
-    retry: number;
-    validate: <S = unknown>(response: ResponseConfig<S>) => boolean;
+    url?: string;
+    // 请求方法
+    method?: TMethod | string;
+    data?: T;
+    // 请求头
+    headers?: Headers;
+    // 超时
+    timeout?: number;
+    // 重试次数
+    retry?: number;
+    // 是否缓存结果
+    cache?: boolean;
+    // 防抖操作，以防用户的连续点击
+    debounce?: number;
   }
 
-  // 响应参数
-  export interface ResponseConfig<S = unknown> {
-    data: S;
+  interface Request<T = unknown> {}
+
+  interface Response<T = unknown, C = unknown> {
+    data: T;
     status: number;
-  }
-
-  export interface AdapterConstruct<Q = unknown> {
-    new (config: RequestConfig<Q>): Adapter<Q>;
-  }
-  // 适配器
-  export abstract class Adapter<Q = unknown> {
-    request<S = unknown>(): Promise<ResponseConfig<S>>;
-    abort(): void;
+    statusText: string;
+    headers: Headers;
+    config: IConfig<C>;
+    request?: any;
   }
 }

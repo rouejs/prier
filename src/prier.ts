@@ -1,65 +1,61 @@
-import { initConfig } from "./helper/defaults";
-export class Prier {
-  defaults: Prier.RequestConfig;
-  interceptors = {
-    request: "",
-    response: "",
-  };
-  constructor(configs: Partial<Prier.RequestConfig>) {
-    this.defaults = initConfig(configs);
+import type Adapter from "./adapter";
+import Request from "./request";
+import type Headers from "./headers";
+import type Response from "./response";
+
+interface Config<T = unknown> {
+  baseURL?: string;
+  url?: string;
+  // 请求方法
+  method?: Prier.TMethod;
+  data?: T;
+  // 请求头
+  headers?: Headers;
+  // 超时
+  timeout?: number;
+  // 重试次数
+  retry?: number;
+  // 是否缓存结果
+  cache?: boolean;
+  // 防抖操作，以防用户的连续点击
+  debounce?: number;
+
+  adapter?: Adapter;
+}
+
+export default class Prier {
+  adapter: Adapter;
+
+  constructor(protected config: Config) {
+    let adapter: Adapter = null;
+    if (!this.config.adapter) {
+      // TODO 获取默认的adapter
+    }
+    this.adapter = adapter;
   }
-  /**
-   *
-   *
-   * @template R
-   * @template S
-   * @param {Partial<Prier.RequestConfig<R>>} config
-   * @return {*}  {Promise<S>}
-   * @memberof Prier
-   */
-  request<R = unknown, S = unknown>(config: Partial<Prier.RequestConfig<R>>): Promise<S>;
-  /**
-   *
-   *
-   * @template R
-   * @template S
-   * @param {string} url
-   * @param {Partial<Prier.RequestConfig<R>>} [config]
-   * @return {*}  {Promise<S>}
-   * @memberof Prier
-   */
-  request<R = unknown, S = unknown>(url: string, config?: Partial<Prier.RequestConfig<R>>): Promise<S>;
-  /**
-   *
-   *
-   * @template R
-   * @template S
-   * @param {(Partial<Prier.RequestConfig<R>> | string)} urlOrConfig
-   * @param {Partial<Prier.RequestConfig<R>>} [config={}]
-   * @return {*}  {Promise<S>}
-   * @memberof Prier
-   */
-  request<R = unknown, S = unknown>(
-    urlOrConfig: Partial<Prier.RequestConfig<R>> | string,
-    config: Partial<Prier.RequestConfig<R>> = {}
-  ): Promise<S> {
-    if (typeof urlOrConfig === "string") {
-      config = { ...config, url: urlOrConfig };
-    } else {
-      config = urlOrConfig;
+
+  // 注册适配器
+  use<T extends Adapter>(adapter: T) {
+    this.adapter = adapter;
+  }
+
+  request(config: string | Config): Promise<Response>;
+  request(url: string | Config, config: Config = {}): Promise<Response> {
+    if (typeof url === "string") {
+      config = {
+        ...config,
+        url,
+      };
     }
 
-    const finalConfig = initConfig(config, this.defaults);
+    const { headers, method, data } = config;
 
-    if (!config.adapter) {
-      throw new Error("adapter can not be undefined");
-    }
-
-    const adapter = new config.adapter(finalConfig);
-
-    adapter.request<S>();
-
-    return new Promise<S>((resolve, reject) => {});
+    const req = new Request(config.url, {
+      headers,
+      method,
+      body: data,
+    });
+    return this.adapter.request(req);
   }
 
   abort() {}
