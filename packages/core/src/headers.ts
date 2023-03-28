@@ -1,10 +1,10 @@
-type HeadersInit = [string, string][] | Record<string, string> | Record<string, string[]> | Headers;
+export type HeadersInit = [string, string][] | Record<string, string> | Record<string, string[]> | PrierHeaders;
 
-export default class Headers {
+export class PrierHeaders {
   headers: Record<string, string[]> = {};
 
   constructor(headers: HeadersInit = {}) {
-    if (headers instanceof Headers) {
+    if (headers instanceof PrierHeaders) {
       headers.forEach((key, value) => {
         this.set(key, value);
       });

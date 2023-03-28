@@ -1,17 +1,9 @@
 {
-  "name": "prier",
-  "version": "0.0.1",
+  "private": true,
   "description": "A new HTTP Client",
-  "main": "dist/prier.js",
-  "type": "module",
-  "types": "src/global.d.ts",
   "scripts": {
-    "prepare": "husky install",
-    "ts-types": " tsc",
-    "dev": "node scripts/dev.js",
-    "build": "node scripts/prod.js",
-    "test": "jest",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "test": "jest"
   },
   "repository": {
     "type": "git",

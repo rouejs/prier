@@ -42,7 +42,7 @@ class XHRResponse implements Response {
     if (responseType === "arraybuffer") {
       return readArrayBufferAsBlob(response);
     }
-    throw new Error("Can not Convert to ArrayBuffer");
+    throw new Error("Can not Convert to Blob");
   }
   formData(): Promise<FormData> {
     throw new Error("Method not implemented.");
