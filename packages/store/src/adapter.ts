@@ -5,5 +5,4 @@ export abstract class Adapter {
   abstract get<T = unknown>(option: GetStoreItemStruct<T>): T;
   abstract clear(namespace?: string): void;
   abstract refresh(namespace: string, key: string, ttl: number): void;
-  abstract expireCheck(): void;
 }

@@ -3,6 +3,7 @@ import { GetStoreItemStruct, SetStoreItemStruct, StoreConfig } from "./typing";
 
 interface StoreItem {
   value: unknown;
+  ttl: number;
   expireAt: number;
 }
 const checkTime = 1000;
@@ -27,6 +28,7 @@ export default class MCAdapter implements Adapter {
     const storeKey = `${namespace}:${key}`;
     this.store.set(storeKey, {
       value,
+      ttl,
       expireAt: ttl ? Date.now() + ttl : 0,
     });
     return value;
@@ -43,7 +45,10 @@ export default class MCAdapter implements Adapter {
     const { namespace = this.config.namespace, key, defaultValue } = option;
     const storeKey = `${namespace}:${key}`;
     const item = this.store.get(storeKey);
-    if (item.expireAt < Date.now()) {
+    if (!item) {
+      return defaultValue;
+    }
+    if (item.expireAt > 0 && item.expireAt < Date.now()) {
       // 缓存过期
       this.store.delete(storeKey);
       return defaultValue;
@@ -89,7 +94,7 @@ export default class MCAdapter implements Adapter {
    *
    * @memberof MCAdapter
    */
-  expireCheck() {
+  private expireCheck() {
     const now = Date.now();
     for (const [key, item] of this.store) {
       if (item.expireAt !== 0 && item.expireAt < now) {

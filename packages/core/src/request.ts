@@ -1,12 +1,14 @@
 import { PrierHeaders, HeadersInit } from "./headers";
-import { PrierPluginInstall } from "./plugin";
+import { PrierPluginResult, TPluginReturn } from "./plugin";
+import { PrierResponse } from "./response";
 import { PrierConfig } from "./typing";
 
-export class PrierRequest {
-  private config: PrierConfig;
+export class PrierRequest<D = unknown> {
+  private config: PrierConfig<D>;
   private headers: PrierHeaders;
-  private plugins: PrierPluginInstall[] = [];
-  constructor(config: PrierConfig, plugin: PrierPluginInstall[] = []) {
+  private plugins: PrierPluginResult[] = [];
+  private response: PrierResponse;
+  constructor(config: PrierConfig<D>, plugin: PrierPluginResult[] = []) {
     this.config = {
       method: "GET",
       headers: new PrierHeaders(),
@@ -14,6 +16,7 @@ export class PrierRequest {
     };
     this.headers = this.config.headers;
     this.plugins = [...plugin];
+    this.response = new PrierResponse();
   }
   /**
    * 获取请求的token
@@ -31,14 +34,25 @@ export class PrierRequest {
     }
     return `req_${Math.random().toString(36).slice(2)}`;
   }
-
-  getConfig(): PrierConfig {
+  /**
+   * 获取请求配置
+   *
+   * @return {*}
+   * @memberof PrierRequest
+   */
+  getConfig(): PrierConfig<D> {
     return {
       ...this.config,
       headers: this.headers,
     };
   }
-  setConfig(config: PrierConfig) {
+  /**
+   * 设置配置信息
+   *
+   * @param {PrierConfig<D>} config
+   * @memberof PrierRequest
+   */
+  setConfig(config: PrierConfig<D>) {
     this.config = {
       ...this.config,
       ...config,
@@ -56,7 +70,20 @@ export class PrierRequest {
       this.headers.set(key, value);
     });
   }
-  next() {
-    return this.plugins.shift();
+  /**
+   * 执行下一个Plugin
+   *
+   * @return {*}  {Promise<TPluginReturn>}
+   * @memberof PrierRequest
+   */
+  async next(): Promise<TPluginReturn> {
+    const { response, plugins } = this;
+    let plugin = plugins.shift();
+    // 所有的插件都执行完毕，直接返回当前的请求对象
+    if (!plugin) {
+      return this;
+    }
+    // 执行下一个插件逻辑
+    return await plugin(this, response);
   }
 }

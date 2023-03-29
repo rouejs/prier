@@ -1,14 +1,15 @@
 import EventEmitter from "./eventEmitter";
+import type { PrierPlugin, PrierPluginResult } from "./plugin";
+import type { PrierConfig } from "./typing";
 import { PrierHeaders } from "./headers";
-import type { PrierPlugin, PrierPluginInstall } from "./plugin";
 import { PrierRequest } from "./request";
-import type { PrierResponse, PrierConfig } from "./typing";
+import { PrierResponse } from "./response";
 
 export class Prier extends EventEmitter {
   private baseConfig;
   private adapter;
 
-  private pluginLists: PrierPluginInstall[] = [];
+  private pluginLists: PrierPluginResult[] = [];
 
   constructor(config?: Omit<PrierConfig, "data">) {
     super();
@@ -36,32 +37,17 @@ export class Prier extends EventEmitter {
    */
   async request<D = unknown, R = unknown>(config: PrierConfig<D>): Promise<PrierResponse<R, D>> {
     let realConf = this.getConfig(config);
-
     let request = new PrierRequest(realConf, this.pluginLists);
-
-    // 生成请求的Token 用来标识不同的请求，如果Token一致的情况下，则代表接口的作用是一样的
-    // 部分插件依赖这个reqToken来进行缓存或者其他的操作
-    realConf.reqToken = this.getReqToken(realConf);
-    for await (const val of this.execPlugin<D>(realConf)) {
-      // str = str + val;
+    let plugin = await request.next();
+    if (plugin instanceof PrierResponse) {
+      // 如果返回的是一个响应对象 说明是要中断服务了，一般在处理Mock或者是缓存之类需要使用
+      return plugin as PrierResponse<R, D>;
+    } else if (plugin instanceof Error) {
+      // 错误直接排除异常，交由业务层处理
+      throw plugin;
     }
     const adapter = new this.adapter();
-    return adapter.request(realConf);
-  }
-  /**
-   * 获取请求Token
-   *
-   * @param {PrierConfig} config
-   * @return {*}  {string}
-   * @memberof Prier
-   */
-  getReqToken(config: PrierConfig): string {
-    if (typeof config.reqToken === "string") {
-      return config.reqToken;
-    } else if (typeof config.reqToken === "function") {
-      return config.reqToken(config);
-    }
-    return `req_${Math.random().toString(36).slice(2)}`;
+    return adapter.request(request);
   }
   /**
    * 获取完整的配置信息
@@ -84,15 +70,5 @@ export class Prier extends EventEmitter {
       realConfig.headers = baseHeaders;
     }
     return realConfig;
-  }
-
-  async *execPlugin<T = unknown>(realConf: PrierConfig<T>) {
-    let i = 0;
-    while (i < this.pluginLists.length) {
-      const plugin = this.pluginLists[i];
-      yield await plugin(realConf);
-      i++;
-    }
-    return realConf;
   }
 }

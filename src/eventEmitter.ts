@@ -1,5 +1,7 @@
 type EventHandler = (event: Event) => void;
 
+Request;
+
 export default class EventEmitter {
   private listeners: Record<string, EventHandler[]>;
 

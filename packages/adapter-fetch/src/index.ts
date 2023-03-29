@@ -1,15 +1,14 @@
-import { Adapter } from "@prier/core";
-import { PrierConfig, PrierResponse } from "@prier/core/dist/typing";
+import { Adapter, PrierRequest, PrierResponse } from "@prier/core";
 
 export default class FetchAdapter implements Adapter {
   private abortController: AbortController;
   private abortTimer: number;
 
-  async request<D = unknown, R = unknown>(option: PrierConfig<D>): Promise<PrierResponse<R, D>> {
+  async request<D = unknown, R = unknown>(req: PrierRequest<D>): Promise<PrierResponse<R, D>> {
     const abortController = new AbortController();
     this.abortController = abortController;
-
-    const { url, baseURL, method, headers: _headers, timeout, data } = option;
+    const config = req.getConfig();
+    const { url, baseURL, method, headers: _headers, timeout, data } = config;
 
     // 头信息转换
     const headers = new Headers();
@@ -31,13 +30,13 @@ export default class FetchAdapter implements Adapter {
       body: data as BodyInit,
     });
 
-    return {
+    return new PrierResponse({
       status: res.status,
       statusText: res.statusText,
       headers: _headers,
-      config: option,
+      config: config,
       data: res.body as R,
-    };
+    });
   }
   abort() {
     this.abortController.abort();
