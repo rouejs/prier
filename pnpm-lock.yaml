@@ -26,9 +26,9 @@ importers:
 
   packages/adapter-fetch:
     specifiers:
-      '@prier/core': workspace:^
+      prier: workspace:^
     dependencies:
-      '@prier/core': link:../core
+      prier: link:../core
 
   packages/adapter-xhr:
     specifiers: {}
@@ -38,25 +38,19 @@ importers:
 
   packages/plugin-cache:
     specifiers:
-      '@prier/core': workspace:^
       '@prier/store': workspace:^
+      prier: workspace:^
     dependencies:
-      '@prier/core': link:../core
       '@prier/store': link:../store
+      prier: link:../core
+
+  packages/plugin-debounce:
+    specifiers:
+      prier: workspace:^
+    dependencies:
+      prier: link:../core
 
   packages/store:
-    specifiers: {}
-
-  packages/wx:
-    specifiers:
-      '@prier/core': workspace:^
-      miniprogram-api-typings: ^3.9.0
-    dependencies:
-      '@prier/core': link:../core
-    devDependencies:
-      miniprogram-api-typings: 3.9.0
-
-  packages/xhr:
     specifiers: {}
 
 packages:
@@ -2958,10 +2952,6 @@ packages:
 
   /minimist/1.2.7:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
-    dev: true
-
-  /miniprogram-api-typings/3.9.0:
-    resolution: {integrity: sha512-QCXHHW9H4XYazb8J9EMiFyaOWHXhBG4oehkQqi+76FJpKKIlpgL0ZkXxzJ2L+6T/c5OxKm7iegovKIQGVkZDLQ==}
     dev: true
 
   /modify-values/1.0.1:

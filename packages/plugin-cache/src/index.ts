@@ -1,4 +1,4 @@
-import { definePrierPlugin } from "@prier/core";
+import { definePrierPlugin } from "prier";
 import { StoreConfig, Store } from "@prier/store";
 
 // 注册缓存插件

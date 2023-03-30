@@ -1,4 +1,4 @@
-import { Adapter, PrierRequest, PrierResponse } from "@prier/core";
+import { Adapter, PrierRequest, PrierResponse } from "prier";
 
 export default class FetchAdapter implements Adapter {
   private abortController: AbortController;

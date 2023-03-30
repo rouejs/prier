@@ -1,18 +1,16 @@
 {
-  "name": "@prier/adapater-wx",
-  "version": "0.0.0",
+  "name": "@prier/plugin-debounce",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prier/core": "workspace:^"
-  },
-  "devDependencies": {
-    "miniprogram-api-typings": "^3.9.0"
+    "prier": "workspace:^"
   }
 }

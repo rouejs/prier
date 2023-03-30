@@ -1,6 +1,6 @@
 {
   "name": "@prier/adapter-fetch",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,6 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prier/core": "workspace:^"
+    "prier": "workspace:^"
   }
 }
