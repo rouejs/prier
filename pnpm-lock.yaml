@@ -31,23 +31,30 @@ importers:
       prier: link:../core
 
   packages/adapter-xhr:
-    specifiers: {}
+    specifiers:
+      prier: workspace:^
+    dependencies:
+      prier: link:../core
 
   packages/core:
     specifiers: {}
 
   packages/plugin-cache:
     specifiers:
+      '@prier/adapter-fetch': workspace:^
       '@prier/store': workspace:^
       prier: workspace:^
     dependencies:
+      '@prier/adapter-fetch': link:../adapter-fetch
       '@prier/store': link:../store
       prier: link:../core
 
   packages/plugin-debounce:
     specifiers:
+      '@prier/adapter-fetch': workspace:^
       prier: workspace:^
     dependencies:
+      '@prier/adapter-fetch': link:../adapter-fetch
       prier: link:../core
 
   packages/store:

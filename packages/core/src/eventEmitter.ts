@@ -15,7 +15,7 @@ export default class EventEmitter {
     }
     this.events[event] = this.events[event].filter((fn) => fn !== listener);
   }
-  emit(event: string, ...args: any[]) {
+  emit(event: string, ...args: unknown[]) {
     if (!this.events[event]) {
       return;
     }

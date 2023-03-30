@@ -1,7 +1,7 @@
 export type HeadersInit = [string, string][] | Record<string, string> | Record<string, string[]> | PrierHeaders;
 
 export class PrierHeaders {
-  headers: Record<string, string[]> = {};
+  private headers: Record<string, string[]> = {};
 
   constructor(headers: HeadersInit = {}) {
     if (headers instanceof PrierHeaders) {

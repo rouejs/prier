@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "prier": "workspace:^"
-  }
+    "prier": "workspace:^",
+    "@prier/adapter-fetch": "workspace:^"
+  },
+  "devDependencies": {}
 }

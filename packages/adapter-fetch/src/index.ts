@@ -1,5 +1,9 @@
 import { Adapter, PrierRequest, PrierResponse } from "prier";
 
+declare module "prier" {
+  export interface PrierConfig extends RequestInit {}
+}
+
 export default class FetchAdapter implements Adapter {
   private abortController: AbortController;
   private abortTimer: number;

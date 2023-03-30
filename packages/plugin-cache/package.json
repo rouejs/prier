@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "prier": "workspace:^",
-    "@prier/store": "workspace:^"
+    "@prier/store": "workspace:^",
+    "@prier/adapter-fetch": "workspace:^"
   }
 }

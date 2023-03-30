@@ -1,14 +1,16 @@
+import EventEmitter from "./eventEmitter";
 import { PrierHeaders, HeadersInit } from "./headers";
 import { PrierPluginResult, TPluginReturn } from "./plugin";
 import { PrierResponse } from "./response";
 import { PrierConfig } from "./typing";
 
-export class PrierRequest<D = unknown> {
+export class PrierRequest<D = unknown> extends EventEmitter {
   private config: PrierConfig<D>;
   private headers: PrierHeaders;
   private plugins: PrierPluginResult[] = [];
   private response: PrierResponse;
   constructor(config: PrierConfig<D>, plugin: PrierPluginResult[] = []) {
+    super();
     this.config = {
       method: "GET",
       headers: new PrierHeaders(),

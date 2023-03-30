@@ -1,23 +1,16 @@
-import { Adapter, Prier } from "../src";
-import { Headers } from "../src/headers";
-import debounce from "../src/plugins/debounce";
-import { PrierConfig, PrierResponse } from "../src/typing";
-
-interface MyConfig<D = unknown> extends PrierConfig<D> {
-  xxxx: number;
-}
-
+import { Adapter, Prier, PrierRequest, PrierResponse } from "../src";
+import { PrierHeaders } from "../src/headers";
 class TestAdapter extends Adapter {
   abort(): void {
     throw new Error("Method not implemented.");
   }
-  request<D = unknown, R = unknown>(option: MyConfig<D>): Promise<PrierResponse<R, D>> {
-    console.log(option);
-    return Promise.resolve<PrierResponse<R, D>>({
+  async request<D = unknown, R = unknown>(req: PrierRequest<D>): Promise<PrierResponse<R, D>> {
+    console.log(req);
+    return new PrierResponse({
       status: 200,
       statusText: "OK",
-      headers: new Headers(),
-      config: option,
+      headers: req.getConfig().headers,
+      config: req.getConfig(),
       data: {} as R,
     });
   }
@@ -28,15 +21,9 @@ test("test", () => {
     adapter: TestAdapter,
   });
 
-  prier.use(debounce, {
-    wait: 1000,
-  });
-
   prier
     .request<{ c: number }, { a: number }>({
       baseURL: "http://pvp.qq.com",
-      timeout: 2000,
-      headers: new Headers(),
       data: {
         c: 2,
       },
@@ -49,8 +36,6 @@ test("test", () => {
   prier
     .request<{ c: number }, { a: number }>({
       baseURL: "http://pvp.qq.com",
-      timeout: 2000,
-      headers: new Headers(),
       data: {
         c: 2,
       },
