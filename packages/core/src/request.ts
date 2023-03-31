@@ -18,7 +18,7 @@ export class PrierRequest<D = unknown> extends EventEmitter {
     };
     this.headers = this.config.headers;
     this.plugins = [...plugin];
-    this.response = new PrierResponse();
+    this.response = new PrierResponse({ request: this });
   }
   /**
    * 获取请求的token

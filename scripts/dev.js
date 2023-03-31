@@ -1,6 +1,6 @@
 import * as esbuild from "esbuild";
 let ctx = await esbuild.context({
-  entryPoints: ["./src/prier.ts"],
+  entryPoints: ["./src/index.ts"],
   sourcemap: true,
   bundle: true,
   format: "esm",

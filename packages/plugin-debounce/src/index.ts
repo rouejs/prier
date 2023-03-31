@@ -28,7 +28,6 @@ export default definePrierPlugin<IDebouncePluginOptions>({
         if (lastTime && now - lastTime < config.debounce) {
           return res.send(new Error("debounce"));
         }
-        res.send("xxxx");
         state.set(token, now);
         setTimeout(() => {
           // 防抖时间结束后删除token

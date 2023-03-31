@@ -1,6 +1,6 @@
 import * as esbuild from "esbuild";
 esbuild.build({
-  entryPoints: ["./src/prier.ts"],
+  entryPoints: ["./src/index.ts"],
   sourcemap: true,
   bundle: true,
   format: "esm",

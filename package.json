@@ -1,6 +1,7 @@
 {
   "private": true,
   "description": "A new HTTP Client",
+  "type": "module",
   "scripts": {
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "test": "jest"

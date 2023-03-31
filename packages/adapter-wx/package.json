@@ -1,8 +1,8 @@
 {
-  "name": "@prier/adapter-xhr",
+  "name": "@prier/adapter-wx",
   "version": "0.0.2",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "node ../../scripts/prod.js &&  tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
+    "miniprogram-api-typings": "^3.9.0",
     "prier": "workspace:^"
   }
 }

@@ -1,10 +1,10 @@
 {
   "name": "prier",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "node ../../scripts/prod.js &&  tsc",
     "test": "ts-jest"
   },
   "keywords": [],

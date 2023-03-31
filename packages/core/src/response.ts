@@ -1,29 +1,32 @@
-import { PrierHeaders } from "./headers";
-import { PrierRequest } from "./request";
-import { PrierConfig } from "./typing";
+import type { PrierRequest } from "./request";
+
+const DEFAULT_STATUS_TEXT = "pending";
 
 export interface IPrierResponseOption<T = unknown, K = unknown> {
+  // 响应数据
   data: T;
+  // 响应状态码
   status: number;
+  // 响应状态信息
   statusText: string;
-  headers: PrierHeaders;
-  config: PrierConfig<K>;
+  // 请求对象
   request: PrierRequest;
 }
 
 export class PrierResponse<T = unknown, K = unknown> {
-  status: number = 200;
-  statusText: string = "OK";
+  status: number = 0;
+  statusText: string = DEFAULT_STATUS_TEXT;
   data: T = null;
-  headers: PrierHeaders = new PrierHeaders();
   request: PrierRequest = null;
-  config: PrierConfig<K> = null;
   constructor(option: Partial<IPrierResponseOption<T, K>> = {}) {
     Object.assign(this, option);
   }
 
-  setStatus(status: number) {
+  setStatus(status: number, statusText: string = "") {
     this.status = status;
+    if (statusText) {
+      this.statusText = statusText;
+    }
     return this;
   }
 
@@ -34,6 +37,8 @@ export class PrierResponse<T = unknown, K = unknown> {
       this.statusText = dataOrError.message;
       return Promise.reject(dataOrError);
     }
+    this.status = this.status || 200;
+    this.statusText = this.statusText == DEFAULT_STATUS_TEXT ? "OK" : this.statusText;
     this.data = dataOrError;
     return this;
   }

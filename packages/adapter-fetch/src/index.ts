@@ -37,8 +37,6 @@ export default class FetchAdapter implements Adapter {
     return new PrierResponse({
       status: res.status,
       statusText: res.statusText,
-      headers: _headers,
-      config: config,
       data: res.body as R,
     });
   }

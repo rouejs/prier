@@ -56,13 +56,12 @@ export default class FetchAdapter implements Adapter {
         e.total;
       });
       this.xhr.addEventListener("loadend", (e) => {
+        const { status, statusText, responseText, response } = this.xhr;
         resolve(
           new PrierResponse({
-            status: 0,
-            statusText: "OK",
-            headers: _headers,
-            config: config,
-            data: 1 as R,
+            status,
+            statusText,
+            data: (responseText || response) as R,
           })
         );
       });

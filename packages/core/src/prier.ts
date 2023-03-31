@@ -37,17 +37,20 @@ export class Prier extends EventEmitter {
    */
   async request<D = unknown, R = unknown>(config: PrierConfig<D>): Promise<PrierResponse<R, D>> {
     let realConf = this.getConfig(config);
+    // 创建请求对象
     let request = new PrierRequest(realConf, this.pluginLists);
-    let plugin = await request.next();
-    if (plugin instanceof PrierResponse) {
-      // 如果返回的是一个响应对象 说明是要中断服务了，一般在处理Mock或者是缓存之类需要使用
-      return plugin as PrierResponse<R, D>;
-    } else if (plugin instanceof Error) {
-      // 错误直接排除异常，交由业务层处理
-      throw plugin;
-    }
-    const adapter = new this.adapter();
-    return adapter.request(request);
+    return request.next().then((ret) => {
+      if (ret instanceof PrierResponse) {
+        // 如果返回的是一个响应对象 说明是要中断服务了，一般在处理Mock或者是缓存之类需要使用
+        return ret as PrierResponse<R, D>;
+      } else if (ret instanceof Error) {
+        // 错误直接排除异常，交由业务层处理
+        throw ret;
+      }
+      // 调用对应的请求适配器发送请求
+      const adapter = new this.adapter();
+      return adapter.request(request);
+    });
   }
   /**
    * 获取完整的配置信息
