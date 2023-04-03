@@ -6,8 +6,8 @@ declare module "prier" {
 
 type TMethod = "GET" | "DELETE" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "TRACE" | "CONNECT";
 
-const getURL = (url: string, baseURL: string): string => {
-  if (url.startsWith("http")) {
+const getURL = (url: string, baseURL?: string): string => {
+  if (url.startsWith("http") || !baseURL) {
     return url;
   }
   if (baseURL.endsWith("/") && url.startsWith("/")) {
@@ -25,6 +25,9 @@ export default class FetchAdapter implements Adapter {
   async request<D = unknown, R = unknown>(req: PrierRequest<D>, res: PrierResponse<R>): Promise<PrierResponse<R, D>> {
     const config = req.getConfig();
     const { url, baseURL, method, headers, timeout, data } = config;
+    if (!url) {
+      throw new Error("url is required");
+    }
 
     // header转换
     const header: Record<string, string> = {};
