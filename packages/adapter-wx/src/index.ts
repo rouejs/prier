@@ -6,6 +6,19 @@ declare module "prier" {
 
 type TMethod = "GET" | "DELETE" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "TRACE" | "CONNECT";
 
+const getURL = (url: string, baseURL: string): string => {
+  if (url.startsWith("http")) {
+    return url;
+  }
+  if (baseURL.endsWith("/") && url.startsWith("/")) {
+    return `${baseURL}${url.slice(1)}`;
+  }
+  if (!baseURL.endsWith("/") && !url.startsWith("/")) {
+    return `${baseURL}/${url}`;
+  }
+  return `${baseURL}${url}`;
+};
+
 export default class FetchAdapter implements Adapter {
   private requestTask: WechatMiniprogram.RequestTask;
 
@@ -20,7 +33,7 @@ export default class FetchAdapter implements Adapter {
     }
 
     const requestOptions: WechatMiniprogram.RequestOption = {
-      url: new URL(url, baseURL).toString(),
+      url: getURL(url, baseURL),
       method: method as TMethod,
       data,
       header,
