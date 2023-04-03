@@ -18,7 +18,7 @@ export default definePrierPlugin<IDebouncePluginOptions>({
     const state = new Map();
     return async (req, res) => {
       const requestConfig = req.getConfig();
-      requestConfig.debounce = requestConfig.debounce ?? config.debounce;
+      requestConfig.debounce = requestConfig.debounce === undefined ? config.debounce : requestConfig.debounce;
       // 配置了防抖时间
       if (config.debounce > 0) {
         const token = req.getToken();
