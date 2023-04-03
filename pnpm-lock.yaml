@@ -49,23 +49,23 @@ importers:
 
   packages/plugin-cache:
     specifiers:
-      '@kstore/core': ^0.0.2
+      '@kstore/core': ^0.0.3
       '@prier/adapter-fetch': workspace:^
-      '@prier/store': workspace:^
       prier: workspace:^
     dependencies:
-      '@kstore/core': 0.0.2
-      '@prier/adapter-fetch': link:../adapter-fetch
-      '@prier/store': link:../store
+      '@kstore/core': 0.0.3
       prier: link:../core
+    devDependencies:
+      '@prier/adapter-fetch': link:../adapter-fetch
 
   packages/plugin-debounce:
     specifiers:
       '@prier/adapter-fetch': workspace:^
       prier: workspace:^
     dependencies:
-      '@prier/adapter-fetch': link:../adapter-fetch
       prier: link:../core
+    devDependencies:
+      '@prier/adapter-fetch': link:../adapter-fetch
 
   packages/store:
     specifiers: {}
@@ -1064,8 +1064,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@kstore/core/0.0.2:
-    resolution: {integrity: sha512-R/Ij+FT64Jo+159YS59dt98Jai/1pzKoiL3wBYYxYGv6EI50/xHwAgE0KlHQoYeiafa8lr7zh9WMpN+Mj/y4hQ==}
+  /@kstore/core/0.0.3:
+    resolution: {integrity: sha512-HH6YhAoQ+oonBC5YrthJTn7TPAq3KAUgVfpJok961FnHpRjFzw8VkkOiuaYXeIYNeA/5lod5PgnD0WcnftdDAg==}
     dev: false
 
   /@sinclair/typebox/0.25.21:

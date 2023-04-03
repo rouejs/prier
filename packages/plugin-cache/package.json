@@ -1,6 +1,6 @@
 {
   "name": "@prier/plugin-cache",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,9 +11,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@kstore/core": "^0.0.2",
-    "@prier/adapter-fetch": "workspace:^",
-    "@prier/store": "workspace:^",
+    "@kstore/core": "^0.0.3",
     "prier": "workspace:^"
+  },
+  "devDependencies": {
+    "@prier/adapter-fetch": "workspace:^"
   }
 }
