@@ -4,11 +4,11 @@ import { PrierPluginResult, TPluginReturn } from "./plugin";
 import { PrierResponse } from "./response";
 import { PrierConfig } from "./typing";
 
-export class PrierRequest<D = unknown> extends EventEmitter {
+export class PrierRequest<D = unknown, R = unknown> extends EventEmitter {
   private config: PrierConfig<D>;
   private headers: PrierHeaders;
   private plugins: PrierPluginResult[] = [];
-  private response: PrierResponse;
+  public response: PrierResponse<R, D>;
   constructor(config: PrierConfig<D>, plugin: PrierPluginResult[] = []) {
     super();
     this.config = {

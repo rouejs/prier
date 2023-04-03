@@ -1,5 +1,5 @@
-import { definePrierPlugin } from "prier";
-import { StoreConfig, Store } from "@prier/store";
+import { definePrierPlugin, PrierResponse } from "prier";
+import { StoreConfig, KStore } from "@kstore/core";
 
 declare module "prier" {
   export interface PrierConfig {
@@ -8,11 +8,10 @@ declare module "prier" {
 }
 
 // 注册缓存插件
-
 export default definePrierPlugin<Partial<StoreConfig>>({
   name: "cache",
   install(prier, config) {
-    const store = new Store(config);
+    const store = new KStore(config);
     return async (req, res) => {
       const { cache } = req.getConfig();
       let cacheConfig: Partial<StoreConfig> = {};
@@ -30,9 +29,15 @@ export default definePrierPlugin<Partial<StoreConfig>>({
       const token = req.getToken();
       const data = await store.get({ ...cacheConfig, key: token });
       if (data) {
-        return res.send({ data });
+        return res.setStatus(200, "cached").send({ data });
       }
-      return req.next();
+      const ret = await req.next();
+      if (ret instanceof PrierResponse) {
+        const { status, data } = ret;
+        if (status === 200) {
+          await store.set({ ...cacheConfig, key: token, value: data });
+        }
+      }
     };
   },
 });

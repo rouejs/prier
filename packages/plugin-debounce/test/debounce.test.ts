@@ -1,4 +1,4 @@
-import { Prier, PrierHeaders } from "prier";
+import { Prier } from "prier";
 import AdapterFetch from "@prier/adapter-fetch";
 import debounce from "../src";
 const prier = new Prier({

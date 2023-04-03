@@ -16,7 +16,7 @@
     "prier"
   ],
   "author": "aiden",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/rouejs/prier/issues"
   },

@@ -49,10 +49,12 @@ importers:
 
   packages/plugin-cache:
     specifiers:
+      '@kstore/core': ^0.0.2
       '@prier/adapter-fetch': workspace:^
       '@prier/store': workspace:^
       prier: workspace:^
     dependencies:
+      '@kstore/core': 0.0.2
       '@prier/adapter-fetch': link:../adapter-fetch
       '@prier/store': link:../store
       prier: link:../core
@@ -1061,6 +1063,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
+
+  /@kstore/core/0.0.2:
+    resolution: {integrity: sha512-R/Ij+FT64Jo+159YS59dt98Jai/1pzKoiL3wBYYxYGv6EI50/xHwAgE0KlHQoYeiafa8lr7zh9WMpN+Mj/y4hQ==}
+    dev: false
 
   /@sinclair/typebox/0.25.21:
     resolution: {integrity: sha512-gFukHN4t8K4+wVC+ECqeqwzBDeFeTzBXroBTqE6vcWrQGbEUpHO7LYdG0f4xnvYq4VOEwITSlHlp0JBAIFMS/g==}

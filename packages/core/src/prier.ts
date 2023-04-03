@@ -19,11 +19,12 @@ export class Prier extends EventEmitter {
     this.adapter = adapter;
   }
 
-  use<T = unknown>(plugin: PrierPlugin<T>, config: T extends undefined ? undefined : T = undefined): void {
+  use<T = unknown>(plugin: PrierPlugin<T>, config: T extends undefined ? undefined : T = undefined): this {
     const ret = plugin.install(this, config);
     if (typeof ret === "function") {
       this.pluginLists.push(ret);
     }
+    return this;
   }
 
   /**
@@ -38,18 +39,24 @@ export class Prier extends EventEmitter {
   async request<D = unknown, R = unknown>(config: PrierConfig<D>): Promise<PrierResponse<R, D>> {
     let realConf = this.getConfig(config);
     // 创建请求对象
-    let request = new PrierRequest(realConf, this.pluginLists);
+    let request: PrierRequest<D, R> = new PrierRequest<D, R>(realConf, [
+      ...this.pluginLists,
+      () => {
+        // 将发送请求也包装进插件任务中
+        const adapter = new this.adapter();
+        return adapter.request(request, request.response);
+      },
+    ]);
     return request.next().then((ret) => {
       if (ret instanceof PrierResponse) {
-        // 如果返回的是一个响应对象 说明是要中断服务了，一般在处理Mock或者是缓存之类需要使用
+        //需要直接响应出去的数据
         return ret as PrierResponse<R, D>;
-      } else if (ret instanceof Error) {
+      }
+      if (ret instanceof Error) {
         // 错误直接排除异常，交由业务层处理
         throw ret;
       }
-      // 调用对应的请求适配器发送请求
-      const adapter = new this.adapter();
-      return adapter.request(request);
+      return request.response;
     });
   }
   /**

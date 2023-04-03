@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "miniprogram-api-typings": "^3.9.0",
     "prier": "workspace:^"

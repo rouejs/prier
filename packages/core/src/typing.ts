@@ -20,6 +20,9 @@ export interface PrierConfig<T = unknown> {
   reqToken?: string | reqTokenFunc;
 }
 export abstract class Adapter {
-  abstract request<D = unknown, R = unknown>(req: PrierRequest<D>): Promise<PrierResponse<R, D>>;
+  abstract request<D = unknown, R = unknown>(
+    req: PrierRequest<D>,
+    res: PrierResponse<R, D>
+  ): Promise<PrierResponse<R, D>>;
   abstract abort(): void;
 }
