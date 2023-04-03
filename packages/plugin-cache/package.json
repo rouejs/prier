@@ -11,7 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@kstore/core": "^0.0.3",
+    "@kstore/core": "^0.0.4",
     "prier": "workspace:^"
   },
   "devDependencies": {
