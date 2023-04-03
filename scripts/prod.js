@@ -4,6 +4,7 @@ esbuild.build({
   sourcemap: true,
   bundle: true,
   format: "cjs",
+  target: "es6",
   // splitting: true,
   // minify: true,
   outdir: "./dist",
