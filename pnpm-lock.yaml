@@ -49,11 +49,11 @@ importers:
 
   packages/plugin-cache:
     specifiers:
-      '@kstore/core': ^0.0.9
+      '@kstore/core': ^0.0.10
       '@prier/adapter-fetch': workspace:^
       prier: workspace:^
     dependencies:
-      '@kstore/core': 0.0.9
+      '@kstore/core': 0.0.10
       prier: link:../core
     devDependencies:
       '@prier/adapter-fetch': link:../adapter-fetch
@@ -1065,8 +1065,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@kstore/core/0.0.9:
-    resolution: {integrity: sha512-MVs8TxwIEsnq8AdmX5xB38PQAWAq/Dsksv7FqslnhC3y2eXiUZsNQxklDazkjk7yrfGQenPyjPOymIvAcSQlRA==}
+  /@kstore/core/0.0.10:
+    resolution: {integrity: sha512-l++qGxU4PUI+YD6HzU8iffZMj87GT8D4z0GLto2HfKUv5OVdumwSRDFmuEPsfURZgkmYxVnqvb/2bZzXOWaJ9w==}
     dev: false
 
   /@sinclair/typebox/0.25.24:

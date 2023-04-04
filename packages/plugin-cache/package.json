@@ -1,6 +1,6 @@
 {
   "name": "@prier/plugin-cache",
-  "version": "0.0.17",
+  "version": "0.0.19",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@kstore/core": "^0.0.9",
+    "@kstore/core": "^0.0.10",
     "prier": "workspace:^"
   },
   "devDependencies": {
