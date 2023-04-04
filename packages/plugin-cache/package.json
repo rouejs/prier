@@ -1,17 +1,17 @@
 {
   "name": "@prier/plugin-cache",
-  "version": "0.0.14",
+  "version": "0.0.17",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "node ../../scripts/prod.js &&  tsc",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@kstore/core": "^0.0.8",
+    "@kstore/core": "^0.0.9",
     "prier": "workspace:^"
   },
   "devDependencies": {

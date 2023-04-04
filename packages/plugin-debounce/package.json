@@ -1,10 +1,10 @@
 {
   "name": "@prier/plugin-debounce",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "node ../../scripts/prod.js &&  tsc",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

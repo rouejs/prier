@@ -33,6 +33,7 @@ export default definePrierPlugin<Partial<StoreConfig>>({
       }
       const ret = await req.next();
       if (ret instanceof PrierResponse) {
+        // 如果返回的是响应体
         const { status, data } = ret;
         if (status === 200) {
           await store.set({ ...cacheConfig, key: token, value: data });
