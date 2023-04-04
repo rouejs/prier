@@ -16,6 +16,8 @@ export default definePrierPlugin<IDebouncePluginOptions>({
   name: "debounce",
   install(prier, config) {
     const state = new Map();
+    // 默认配置参数
+    config = { debounce: 1000, ...config };
     return async (req, res) => {
       const requestConfig = req.getConfig();
       requestConfig.debounce = requestConfig.debounce === undefined ? config.debounce : requestConfig.debounce;
