@@ -29,7 +29,7 @@ export default definePrierPlugin<Partial<StoreConfig>>({
       const token = req.getToken();
       const data = await store.get({ ...cacheConfig, key: token });
       if (data) {
-        return res.setStatus(200, "cached").send({ data });
+        return res.setStatus(200, "cached").send(data);
       }
       const ret = await req.next();
       if (ret instanceof PrierResponse) {
