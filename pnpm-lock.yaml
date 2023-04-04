@@ -67,6 +67,15 @@ importers:
     devDependencies:
       '@prier/adapter-fetch': link:../adapter-fetch
 
+  packages/plugin-reuse:
+    specifiers:
+      '@prier/adapter-fetch': workspace:^
+      prier: workspace:^
+    dependencies:
+      prier: link:../core
+    devDependencies:
+      '@prier/adapter-fetch': link:../adapter-fetch
+
   packages/store:
     specifiers: {}
 
