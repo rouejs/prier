@@ -47,7 +47,10 @@ export class Prier extends EventEmitter {
         return adapter.request(request, request.response);
       },
     ]);
+
     return request.next().then((ret) => {
+      ret = ret || request;
+      request.emit("complete", ret);
       if (ret instanceof PrierResponse) {
         //需要直接响应出去的数据
         return ret as PrierResponse<R, D>;
@@ -56,7 +59,7 @@ export class Prier extends EventEmitter {
         // 错误直接排除异常，交由业务层处理
         throw ret;
       }
-      return request.response;
+      return ret.response;
     });
   }
   /**

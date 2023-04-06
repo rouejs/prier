@@ -7,9 +7,9 @@ import { PrierConfig } from "./typing";
 export class PrierRequest<D = unknown, R = unknown> extends EventEmitter {
   private config: PrierConfig<D>;
   private headers: PrierHeaders;
-  private plugins: PrierPluginResult[] = [];
+  private plugins: PrierPluginResult<D, R>[] = [];
   public response: PrierResponse<R, D>;
-  constructor(config: PrierConfig<D>, plugin: PrierPluginResult[] = []) {
+  constructor(config: PrierConfig<D>, plugin: PrierPluginResult<D, R>[] = []) {
     super();
     this.config = {
       method: "GET",
@@ -78,7 +78,7 @@ export class PrierRequest<D = unknown, R = unknown> extends EventEmitter {
    * @return {*}  {Promise<TPluginReturn>}
    * @memberof PrierRequest
    */
-  async next(): Promise<TPluginReturn> {
+  async next(): Promise<TPluginReturn<D, R>> {
     const { response, plugins } = this;
     let plugin = plugins.shift();
     // 所有的插件都执行完毕，直接返回当前的请求对象

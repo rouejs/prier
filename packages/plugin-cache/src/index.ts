@@ -1,4 +1,4 @@
-import { definePrierPlugin, PrierResponse } from "prier";
+import { definePrierPlugin, PrierRequest, PrierResponse } from "prier";
 import { StoreConfig, KStore } from "@kstore/core";
 
 declare module "prier" {
@@ -31,7 +31,10 @@ export default definePrierPlugin<Partial<StoreConfig>>({
       if (data) {
         return res.setStatus(200, "cached").send(data);
       }
-      const ret = await req.next();
+      let ret = (await req.next()) || req;
+      if (ret instanceof PrierRequest) {
+        ret = ret.response;
+      }
       if (ret instanceof PrierResponse) {
         // 如果返回的是响应体
         const { status, data } = ret;

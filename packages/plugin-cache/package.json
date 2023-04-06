@@ -1,6 +1,6 @@
 {
   "name": "@prier/plugin-cache",
-  "version": "0.0.19",
+  "version": "0.0.21",
   "description": "",
   "main": "dist/index.js",
   "scripts": {

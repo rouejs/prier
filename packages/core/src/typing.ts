@@ -21,7 +21,7 @@ export interface PrierConfig<T = unknown> {
 }
 export abstract class Adapter {
   abstract request<D = unknown, R = unknown>(
-    req: PrierRequest<D>,
+    req: PrierRequest<D, R>,
     res: PrierResponse<R, D>
   ): Promise<PrierResponse<R, D>>;
   abstract abort(): void;

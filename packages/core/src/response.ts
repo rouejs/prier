@@ -17,7 +17,7 @@ export class PrierResponse<T = unknown, K = unknown> {
   status: number = 0;
   statusText: string = DEFAULT_STATUS_TEXT;
   data: T = null;
-  request: PrierRequest = null;
+  request: PrierRequest<K, T> = null;
   constructor(option: Partial<IPrierResponseOption<T, K>> = {}) {
     Object.assign(this, option);
   }
@@ -45,6 +45,7 @@ export class PrierResponse<T = unknown, K = unknown> {
       Object.assign(this, { status, statusText, data });
       return this;
     }
+
     this.data = dataOrError;
     return this;
   }

@@ -1,4 +1,4 @@
-import { definePrierPlugin } from "prier";
+import { definePrierPlugin, PrierRequest, PrierResponse, TPluginReturn } from "prier";
 
 declare module "prier" {
   export interface PrierConfig {
@@ -6,18 +6,18 @@ declare module "prier" {
   }
 }
 
-interface IDebouncePluginOptions {
+interface IReusePluginOptions {
   reuse?: boolean;
 }
 
 // 注册防抖插件
 
-export default definePrierPlugin<IDebouncePluginOptions>({
-  name: "debounce",
+export default definePrierPlugin<IReusePluginOptions>({
+  name: "reuse",
   install(prier, config) {
     config = { reuse: true, ...config };
 
-    const state = new Map();
+    const state = new Map<string, PrierRequest>();
     return async (req, res) => {
       const requestConfig = req.getConfig();
       requestConfig.reuse = requestConfig.reuse === undefined ? config.reuse : requestConfig.reuse;
@@ -25,32 +25,23 @@ export default definePrierPlugin<IDebouncePluginOptions>({
         return req.next();
       }
       const token = req.getToken();
-      const preReq = state.get(token);
-      if (preReq) {
-        return preReq;
+      const cached = state.get(token);
+      if (cached) {
+        // 有缓存的情况下，将请求功能转换成等待前一个请求完成
+        const ret = await new Promise<TPluginReturn>((resolve) => {
+          cached.on("complete", (ret: TPluginReturn) => {
+            resolve(ret);
+          });
+        });
+        if (ret instanceof PrierRequest) {
+          return res.send(ret.response);
+        }
+        return res.send(ret);
+      } else {
+        state.set(token, req);
+        await req.next();
+        state.delete(token);
       }
-      state.set(token, req);
-      await req.next();
-      state.delete(token);
-
-      // requestConfig.debounce = requestConfig.debounce === undefined ? config.debounce : requestConfig.debounce;
-      // // 配置了防抖时间
-      // if (requestConfig.debounce > 0) {
-      //   const token = req.getToken();
-      //   const now = Date.now();
-      //   const lastTime = state.get(token);
-      //   // 判断是否还在防抖时间内
-      //   if (lastTime && now - lastTime < requestConfig.debounce) {
-      //     return res.send(new Error("debounce"));
-      //   }
-      //   state.set(token, now);
-      //   setTimeout(() => {
-      //     // 防抖时间结束后删除token
-      //     state.delete(token);
-      //   }, requestConfig.debounce);
-      // }
-      // // 执行下一个插件
-      // return req.next();
     };
   },
 });

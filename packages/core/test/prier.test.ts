@@ -4,14 +4,16 @@ class TestAdapter extends Adapter {
   abort(): void {
     throw new Error("Method not implemented.");
   }
-  async request<D = unknown, R = unknown>(req: PrierRequest<D>): Promise<PrierResponse<R, D>> {
+  async request<D = unknown, R = unknown>(
+    req: PrierRequest<D, R>,
+    _res: PrierResponse<R, D>
+  ): Promise<PrierResponse<R, D>> {
     console.log(req);
     return new PrierResponse({
       status: 200,
       statusText: "OK",
-      headers: req.getConfig().headers,
-      config: req.getConfig(),
       data: {} as R,
+      request: req,
     });
   }
 }
