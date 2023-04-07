@@ -4,7 +4,19 @@ import type { PrierConfig } from "./typing";
 import { PrierHeaders } from "./headers";
 import { PrierRequest } from "./request";
 import { PrierResponse } from "./response";
-
+/**
+ * Prier 请求核心
+ *
+ * @export
+ * @class Prier
+ * @extends {EventEmitter}
+ * @example
+ * var prier = new Prier({baseURL: "http://localhost"});
+ * 注册中间件
+ * prier.use(yourCustomPlugin, {...插件配置})
+ * 发送请求
+ * await prier.request({url:"api/path"})
+ */
 export class Prier extends EventEmitter {
   private baseConfig;
   private adapter;
@@ -18,7 +30,19 @@ export class Prier extends EventEmitter {
     this.baseConfig.headers = new PrierHeaders(config.headers);
     this.adapter = adapter;
   }
-
+  /**
+   * 使用Plugin
+   *
+   * @template T
+   * @param {PrierPlugin<T>} plugin 需要安装的插件
+   * @param {T extends undefined ? undefined : T} [config=undefined] 插件相关配置信息
+   * @return {*}  {this}
+   * @memberof Prier
+   * @example
+   * prier.use(debounce, {
+   *  debounce: 1000
+   * })
+   */
   use<T = unknown>(plugin: PrierPlugin<T>, config: T extends undefined ? undefined : T = undefined): this {
     const ret = plugin.install(this, config);
     if (typeof ret === "function") {
@@ -32,9 +56,15 @@ export class Prier extends EventEmitter {
    *
    * @template D
    * @template R
-   * @param {PrierConfig<D>} config
+   * @param {PrierConfig<D>} config 请求的配置信息
    * @return {*}  {Promise<PrierResponse<R, D>>}
    * @memberof Prier
+   * @example
+   * prier.request({
+   *  url: 'http://localhost'
+   * }).then(console.log)
+   *
+   * prier.request({})
    */
   async request<D = unknown, R = unknown>(config: PrierConfig<D>): Promise<PrierResponse<R, D>> {
     let realConf = this.getConfig(config);

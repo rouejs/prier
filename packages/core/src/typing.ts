@@ -20,9 +20,28 @@ export interface PrierConfig<T = unknown> {
   reqToken?: string | reqTokenFunc;
 }
 export abstract class Adapter {
+  /**
+   * 发送请求
+   *
+   * @abstract
+   * @template D
+   * @template R
+   * @param {PrierRequest<D, R>} req 请求对象
+   * @param {PrierResponse<R, D>} res 响应对象
+   * @return {*}  {Promise<PrierResponse<R, D>>}
+   * @memberof Adapter
+   */
   abstract request<D = unknown, R = unknown>(
+    // 请求对象
     req: PrierRequest<D, R>,
+    // 响应对象
     res: PrierResponse<R, D>
   ): Promise<PrierResponse<R, D>>;
+  /**
+   * 中断请求
+   *
+   * @abstract
+   * @memberof Adapter
+   */
   abstract abort(): void;
 }
