@@ -1,5 +1,4 @@
 import { Adapter, Prier, PrierRequest, PrierResponse } from "../src";
-import { PrierHeaders } from "../src/headers";
 class TestAdapter extends Adapter {
   abort(): void {
     throw new Error("Method not implemented.");
@@ -8,7 +7,6 @@ class TestAdapter extends Adapter {
     req: PrierRequest<D, R>,
     _res: PrierResponse<R, D>
   ): Promise<PrierResponse<R, D>> {
-    console.log(req);
     return new PrierResponse({
       status: 200,
       statusText: "OK",

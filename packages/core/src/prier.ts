@@ -38,27 +38,34 @@ export class Prier extends EventEmitter {
    */
   async request<D = unknown, R = unknown>(config: PrierConfig<D>): Promise<PrierResponse<R, D>> {
     let realConf = this.getConfig(config);
-    // 创建请求对象
-    let request: PrierRequest<D, R> = new PrierRequest<D, R>(realConf, [
-      ...this.pluginLists,
+
+    const plugins = [
+      ...(this.pluginLists as PrierPluginResult<D, R>[]),
       () => {
         // 将发送请求也包装进插件任务中
         const adapter = new this.adapter();
         return adapter.request(request, request.response);
       },
-    ]);
+    ];
+
+    // 创建请求对象
+    let request: PrierRequest<D, R> = new PrierRequest<D, R>(realConf, plugins);
+    request.emit("request", request);
 
     return request.next().then((ret) => {
       ret = ret || request;
       request.emit("complete", ret);
       if (ret instanceof PrierResponse) {
         //需要直接响应出去的数据
+        request.emit("success", ret);
         return ret as PrierResponse<R, D>;
       }
       if (ret instanceof Error) {
-        // 错误直接排除异常，交由业务层处理
+        request.emit("error", ret);
+        // 错误直接抛出异常，交由业务层处理
         throw ret;
       }
+      request.emit("success", ret.response);
       return ret.response;
     });
   }
