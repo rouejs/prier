@@ -21,12 +21,12 @@ export default definePrierPlugin<IRetryPluginOptions>({
         return req.next();
       }
       let leftRetryTimes = retryTimes;
-      let ret = await req.next(index + 1).catch((err) => err);
+      let ret = await req.next().catch((err) => err);
       // TODO: 对于一些steam类型的请求，需要实现stream的重试
       // 有重试次数的情况下，需要循环执行
       while (ret instanceof Error && leftRetryTimes > 0) {
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
-        ret = await req.next(index + 1).catch((err) => err);
+        ret = await req.next(index).catch((err) => err);
         leftRetryTimes--;
       }
       return ret;
