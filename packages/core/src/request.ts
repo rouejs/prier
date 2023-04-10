@@ -37,6 +37,9 @@ export class PrierRequest<D = unknown, R = unknown> extends EventEmitter {
    * @memberof PrierRequest
    */
   private plugins: PrierPluginResult<D, R>[] = [];
+
+  private pluginIndex: number = 0;
+
   /**
    * 对应的Reponse对象
    *
@@ -123,19 +126,23 @@ export class PrierRequest<D = unknown, R = unknown> extends EventEmitter {
     });
   }
   /**
-   * 执行下一个Plugin
+   * 执行下一个plugin
    *
-   * @return {*}  {Promise<TPluginReturn>}
+   * @param {number} [target] 可以指定执行到第几个插件 默认是按照顺序往下执行
+   * @return {*}  {Promise<TPluginReturn<D, R>>}
    * @memberof PrierRequest
    */
-  async next(): Promise<TPluginReturn<D, R>> {
+  async next(target?: number): Promise<TPluginReturn<D, R>> {
+    if (typeof target === "number") {
+      this.pluginIndex = target;
+    }
     const { response, plugins } = this;
-    let plugin = plugins.shift();
+    let plugin = plugins[this.pluginIndex++];
     // 所有的插件都执行完毕，直接返回当前的请求对象
     if (!plugin) {
       return this;
     }
     // 执行下一个插件逻辑
-    return await plugin(this, response);
+    return await plugin(this, response, this.pluginIndex);
   }
 }

@@ -9,7 +9,9 @@ export type PrierPluginResult<T = unknown, R = unknown> = (
   // 请求对象
   req: PrierRequest<T, R>,
   // 响应对象
-  res: PrierResponse<R, T>
+  res: PrierResponse<R, T>,
+  // 插件的执行序号
+  index: number
 ) => Promise<TPluginReturn<T, R>>;
 
 export interface PrierPlugin<T = unknown> {
