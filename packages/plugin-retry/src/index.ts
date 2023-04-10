@@ -1,18 +1,14 @@
 import { definePrierPlugin, PrierRequest, TPluginReturn } from "prier";
 
-declare module "prier" {
-  export interface PrierConfig {
-    retryTimes?: number;
-    retryDelay?: number;
-  }
-}
-
 interface IRetryPluginOptions {
   retryTimes?: number;
   retryDelay?: number;
 }
+declare module "prier" {
+  export interface PrierConfig extends IRetryPluginOptions {}
+}
 
-// 注册防抖插件
+// 注册重试插件
 
 export default definePrierPlugin<IRetryPluginOptions>({
   name: "retry",

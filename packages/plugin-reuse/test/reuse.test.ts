@@ -4,11 +4,11 @@ import debounce from "../src";
 const prier = new Prier({
   adapter: AdapterFetch,
   baseURL: "http://pvp.qq.com",
-  debounce: 1000,
+  reuse: true,
 });
 test("test", () => {
   prier.use(debounce, {
-    debounce: 1000,
+    reuse: true,
   });
 
   prier
@@ -17,7 +17,7 @@ test("test", () => {
       data: {
         c: 2,
       },
-      debounce: 1000,
+      reuse: true,
       reqToken: "test",
     })
     .then((x) => {

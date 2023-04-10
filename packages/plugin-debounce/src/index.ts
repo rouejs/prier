@@ -1,13 +1,10 @@
 import { definePrierPlugin } from "prier";
 
-declare module "prier" {
-  export interface PrierConfig {
-    debounce?: number;
-  }
-}
-
 interface IDebouncePluginOptions {
   debounce?: number;
+}
+declare module "prier" {
+  export interface PrierConfig extends IDebouncePluginOptions {}
 }
 
 // 注册防抖插件

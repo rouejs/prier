@@ -4,6 +4,7 @@ import debounce from "../src";
 const prier = new Prier({
   adapter: AdapterFetch,
   baseURL: "http://pvp.qq.com",
+  retryDelay: 1000,
 });
 test("test", () => {
   prier.use(debounce, {});
@@ -15,6 +16,7 @@ test("test", () => {
         c: 2,
       },
       reqToken: "test",
+      retryTimes: 2,
     })
     .then((x) => {
       console.log(x);

@@ -1,13 +1,10 @@
 import { definePrierPlugin, PrierRequest, PrierResponse, TPluginReturn } from "prier";
 
-declare module "prier" {
-  export interface PrierConfig {
-    reuse?: boolean;
-  }
-}
-
 interface IReusePluginOptions {
   reuse?: boolean;
+}
+declare module "prier" {
+  export interface PrierConfig extends IReusePluginOptions {}
 }
 
 // 注册防抖插件
