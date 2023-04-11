@@ -18,6 +18,10 @@ export interface PrierConfig<T = unknown> {
   adapter?: new () => Adapter;
   // 请求唯一标识Token，插件使用
   reqToken?: string | reqTokenFunc;
+  // 判断相应是否有效 针对部分业务错误码仅根据接口特定字段判断请求状态
+  // 如某些借口返回的数据格式为{code:200 ,data:{},msg:""}，其中code为业务错误码，data为业务数据，msg为业务错误信息
+  // 上面这种情况可配置validate: (rsp: PrierResponse) => rsp.data.code === 200
+  validate?: (rsp: PrierResponse) => boolean;
 }
 export abstract class Adapter {
   /**

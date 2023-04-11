@@ -87,8 +87,13 @@ export class Prier extends EventEmitter {
       request.emit("complete", ret);
       if (ret instanceof PrierResponse) {
         //需要直接响应出去的数据
-        request.emit("success", ret);
-        return ret as PrierResponse<R, D>;
+        if (realConf?.validate(ret)) {
+          request.emit("success", ret);
+          return ret as PrierResponse<R, D>;
+        } else {
+          request.emit("error", ret);
+          throw ret;
+        }
       }
       if (ret instanceof Error) {
         request.emit("error", ret);
@@ -110,7 +115,15 @@ export class Prier extends EventEmitter {
    */
   private getConfig<D = unknown>(config: PrierConfig<D>): PrierConfig<D> {
     const { headers, ...others } = config;
-    const realConfig: PrierConfig<D> = { method: "GET", ...this.baseConfig, ...others };
+    const realConfig: PrierConfig<D> = {
+      method: "GET",
+      validate: (rsp: PrierResponse) => {
+        const { status } = rsp;
+        return status >= 200 && status < 300;
+      },
+      ...this.baseConfig,
+      ...others,
+    };
     if (headers) {
       const baseHeaders = new PrierHeaders(this.baseConfig.headers);
       const header = new PrierHeaders(headers);
