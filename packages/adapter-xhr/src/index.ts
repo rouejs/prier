@@ -65,9 +65,18 @@ export default class FetchAdapter implements Adapter {
           })
         );
       });
+      // 监听上传进度
+      this.xhr.upload.addEventListener("progress", (e) => {
+        const { total, loaded } = e;
+        req.emit("upload:progress", {
+          total,
+          loaded,
+        });
+      });
+      // 监听下载进度
       this.xhr.addEventListener("progress", (e) => {
         const { total, loaded } = e;
-        req.emit("progress", {
+        req.emit("download:progress", {
           total,
           loaded,
         });
