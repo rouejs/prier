@@ -16,11 +16,14 @@ const hasContentType = (headers: PrierHeaders) => {
 export default class FetchAdapter implements Adapter {
   private xhr: XMLHttpRequest;
 
-  async request<D = unknown, R = unknown>(req: PrierRequest<D>): Promise<PrierResponse<R, D>> {
+  async request<D = unknown, R = unknown>(req: PrierRequest<D>, res: PrierResponse<R>): Promise<PrierResponse<R, D>> {
     this.xhr = new XMLHttpRequest();
     const config = req.getConfig();
-    const { url, baseURL, method, headers: _headers, timeout, data } = config;
+    const { url, baseURL, method, headers: _headers, timeout, data, responseType } = config;
+
     this.xhr.open(method, new URL(url, baseURL));
+
+    this.xhr.responseType = responseType;
 
     let finalData: unknown;
 
@@ -52,18 +55,15 @@ export default class FetchAdapter implements Adapter {
         reject(e);
       });
       this.xhr.addEventListener("load", (e) => {});
-      this.xhr.addEventListener("loadstart", (e) => {
-        e.total;
-      });
+      // this.xhr.addEventListener("loadstart", (e) => {
+      //   e.total;
+      // });
       this.xhr.addEventListener("loadend", (e) => {
-        const { status, statusText, responseText, response } = this.xhr;
-        resolve(
-          new PrierResponse({
-            status,
-            statusText,
-            data: (responseText || response) as R,
-          })
-        );
+        const { status, statusText, response } = this.xhr;
+        // 只有responseType为空或者text时才能读取responseText 要不然会报错
+        const responseData = !responseType || responseType === "text" ? this.xhr.responseText : response;
+        res.setStatus(status, statusText);
+        resolve(res.send(responseData as R));
       });
       // 监听上传进度
       this.xhr.upload.addEventListener("progress", (e) => {
@@ -85,7 +85,7 @@ export default class FetchAdapter implements Adapter {
         reject(new Error("request timeout"));
       });
 
-      this.xhr.send(data as XMLHttpRequestBodyInit);
+      this.xhr.send((data as XMLHttpRequestBodyInit) || null);
     });
   }
   abort() {
