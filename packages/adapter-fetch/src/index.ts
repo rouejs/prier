@@ -3,6 +3,28 @@ import { Adapter, PrierRequest, PrierResponse } from "prier";
 declare module "prier" {
   export interface PrierConfig extends RequestInit {}
 }
+const dataMap: Record<string, (rsp: Response) => unknown> = {
+  arraybuffer(rsp) {
+    return rsp.arrayBuffer();
+  },
+  blob(rsp) {
+    return rsp.blob();
+  },
+  async document(rsp) {
+    const text = await rsp.text();
+    const parser = new DOMParser();
+    return parser.parseFromString(text, "text/html");
+  },
+  json(rsp) {
+    return rsp.json();
+  },
+  text(rsp) {
+    return rsp.text();
+  },
+  stream(rsp) {
+    return rsp.body;
+  },
+};
 
 export default class FetchAdapter implements Adapter {
   private abortController: AbortController;
@@ -14,12 +36,14 @@ export default class FetchAdapter implements Adapter {
     res: PrierResponse<R, D>
   ): Promise<PrierResponse<R, D>> {
     const config = req.getConfig();
-    const { url, baseURL, method, headers: _headers, timeout, data, signal } = config;
-    if (!signal) {
-      const abortController = new AbortController();
-      this.abortController = abortController;
-      this.signal = abortController.signal;
-    }
+    const { url, baseURL, method, headers: _headers, timeout, data, signal, responseType } = config;
+    this.signal =
+      signal ||
+      this.signal ||
+      (function () {
+        var ctrl = new AbortController();
+        return ctrl.signal;
+      })();
 
     // 头信息转换
     const headers = new Headers();
@@ -38,18 +62,16 @@ export default class FetchAdapter implements Adapter {
       req.emit("abort");
     });
 
+    // 发送请求
     const ret = await fetch(new URL(url, baseURL), {
-      signal,
+      signal: this.signal,
       headers,
       method,
       body: data as BodyInit,
     });
-    return res.setStatus(ret.status, ret.statusText).send(ret.body as R);
-    // return res.send(
-    //   new PrierResponse({
-    //     data: ret.body as R,
-    //   })
-    // );
+    res.setStatus(ret.status, ret.statusText);
+    const bodyData = await dataMap[responseType](ret);
+    return res.send(bodyData as R);
   }
   abort() {
     if (this.abortController) {
