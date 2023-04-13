@@ -107,6 +107,7 @@ export class PrierResponse<R = unknown, D = unknown> {
   send(dataOrError: R | PrierResponse<R, D> | Error): Promise<Error> | this {
     if (dataOrError instanceof Error) {
       this.statusText = dataOrError.message;
+      this.status = this.status || 500;
       return Promise.reject(dataOrError);
     }
     this.status = this.status || 200;

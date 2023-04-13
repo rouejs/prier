@@ -21,14 +21,44 @@ export class Prier extends EventEmitter {
   private baseConfig;
   private adapter;
 
-  private pluginLists: PrierPluginResult[] = [];
-
-  constructor(config?: Omit<PrierConfig, "data">) {
+  constructor(config?: Omit<PrierConfig, "data">, private pluginLists: PrierPluginResult[] = []) {
     super();
     const { adapter, ...others } = config;
     this.baseConfig = { ...others };
     this.baseConfig.headers = new PrierHeaders(config.headers);
     this.adapter = adapter;
+  }
+  /**
+   * 创建新的Prier实例
+   *
+   * @param {boolean} [inherit] 是否继承当前实例的配置
+   * @return {*}  {Prier}
+   * @memberof Prier
+   */
+  create(inherit?: boolean): Prier;
+  /**
+   * 创建新的Prier实例
+   *
+   * @param {Omit<PrierConfig, "data">} [config] 新实例的配置
+   * @return {*}  {Prier}
+   * @memberof Prier
+   */
+  create(config?: Omit<PrierConfig, "data">): Prier;
+  /**
+   * 创建新的Prier实例
+   *
+   * @param {(boolean | Omit<PrierConfig, "data">)} [configOrInherit] 新实例的配置或者是否继承当前实例的配置
+   * @param {boolean} [inherit] 是否继承当前实例的配置
+   * @return {*}  {Prier}
+   * @memberof Prier
+   */
+  create(configOrInherit?: boolean | Omit<PrierConfig, "data">, inherit?: boolean): Prier {
+    const config = typeof configOrInherit === "boolean" ? {} : configOrInherit;
+    inherit = typeof configOrInherit === "boolean" ? configOrInherit : inherit;
+    if (inherit) {
+      return new Prier({ adapter: this.adapter, ...this.baseConfig, ...config }, this.pluginLists);
+    }
+    return new Prier(config);
   }
   /**
    * 使用Plugin
@@ -71,10 +101,18 @@ export class Prier extends EventEmitter {
 
     const plugins = [
       ...(this.pluginLists as PrierPluginResult<D, R>[]),
-      () => {
+      async () => {
         // 将发送请求也包装进插件任务中
         const adapter = new this.adapter();
-        return adapter.request(request, request.response);
+        try {
+          const rsp = await adapter.request(request, request.response);
+          if (realConf?.validate(rsp)) {
+            return rsp;
+          }
+          return rsp.send(new Error("response validate failed"));
+        } catch (e) {
+          throw e;
+        }
       },
     ];
 
@@ -87,13 +125,8 @@ export class Prier extends EventEmitter {
       request.emit("complete", ret);
       if (ret instanceof PrierResponse) {
         //需要直接响应出去的数据
-        if (realConf?.validate(ret)) {
-          request.emit("success", ret);
-          return ret as PrierResponse<R, D>;
-        } else {
-          request.emit("error", ret);
-          throw ret;
-        }
+        request.emit("success", ret);
+        return ret as PrierResponse<R, D>;
       }
       if (ret instanceof Error) {
         request.emit("error", ret);
@@ -117,6 +150,7 @@ export class Prier extends EventEmitter {
     const { headers, ...others } = config;
     const realConfig: PrierConfig<D> = {
       method: "GET",
+      responseType: "json",
       validate: (rsp: PrierResponse) => {
         const { status } = rsp;
         return status >= 200 && status < 300;

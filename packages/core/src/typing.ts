@@ -10,6 +10,7 @@ export interface PrierConfig<T = unknown> {
   // 请求方法
   method?: "GET" | "DELETE" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "PATCH" | "PURGE" | "LINK" | "UNLINK";
   data?: T;
+  responseType?: "arraybuffer" | "blob" | "document" | "json" | "text" | "stream";
   // 请求头
   headers?: PrierHeaders;
   // 超时
