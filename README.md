@@ -103,3 +103,26 @@ prier.request({ url: "https://yourdomain.com", reqToken: "testToken", reuse: fal
 我们需要注意的是，在请求的时候传入`reuse`，只是针对当前这条请求有效,并不会影响到其他
 
 #### 中间件开发
+
+上面提供的几个中间件，覆盖了目前开发阶段会碰到的大部分问题，但是部分没法通用的中间件，可能还是需要开发者在自己的业务中去定义。
+
+当然了，开发一个中间件 也并不是什么困难的事情，通过`definePrierPlugin` 这个方法就可以轻松实现
+
+```typescript
+export default definePrierPlugin({
+  name: "插件名称",
+  install(prier, config) {
+    // 这里可以添加一些插件初始化的逻辑
+
+    // 如果有返回值的情况下，返回值必须是一个function 该function在请求执行时会被执行
+    // 这种情况下，和middleware的概念类似
+    return async (req, rsp, index) => {
+      // 逻辑处理
+      const ret = await req.next();
+      // 请求完成后的逻辑可以在这里完成
+    };
+  },
+});
+```
+
+详细的文档，请查阅[这里](详细文档)
